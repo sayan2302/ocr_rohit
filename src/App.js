@@ -4,39 +4,8 @@ import './App.css';
 import Lottie from "lottie-react";
 import ocr_lottie from "./ocr_lottie.json";
 import { toast, ToastContainer } from 'react-toastify';
-import { glib_process, marksheet_table, process_files, process_remaining, student_info } from './url';
+import { glib_process, marksheet_table, student_info } from './url';
 
-const result = {
-  "status": "success",
-  "message": "Remaining pipeline completed",
-  "execution_time": "12.12 seconds",
-  "steps_completed": [
-    "Table extraction complete",
-    "Image to text conversion complete",
-    "Structured remaining processing complete"
-  ],
-  "timings": {
-    "table_extraction": "6.03 seconds",
-    "image_to_txt": "1.20 seconds",
-    "structured_remaining": "4.88 seconds"
-  },
-  "results": [
-    {
-      "name_of_candidate": null,
-      "father_name": null,
-      "school_or_college_name": "NITTE MEENAKSHI INSTITUTE OF TECHNOLOGY",
-      "date_of_birth": null,
-      "type_of_document": "Transcript",
-      "issuing_authority": "Controller of Examinations, NITTE MEENAKSHI INSTITUTE OF TECHNOLOGY",
-      "is_educational_document": true,
-      "month_year_of_exam": null,
-      "cgpa": null,
-      "overall_grade_of_candidate": null,
-      "roll_no": null,
-      "result": "Passed"
-    }
-  ]
-}
 
 function App() {
   const [file, setFile] = useState(null);
