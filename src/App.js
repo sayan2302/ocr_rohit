@@ -1,5 +1,10 @@
 import React, { useLayoutEffect, useState } from 'react';
+import axios from 'axios'; // Import Axios
 import './App.css';
+import Lottie from "lottie-react";
+import ocr_lottie from "./ocr_lottie.json";
+import { toast, ToastContainer } from 'react-toastify';
+import { glib_process, marksheet_table, process_files, process_remaining, student_info } from './url';
 
 const result = {
   "status": "success",
@@ -36,6 +41,13 @@ const result = {
 function App() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(''); // State to store the file name
+  const [response1, setResponse1] = useState(""); // State to store API response
+  const [response2, setResponse2] = useState(""); // State to store API response
+  const [response3, setResponse3] = useState(""); // State to store API response
+
+  const [loader1, setLoader1] = useState(false); // State to store API response
+  const [loader2, setLoader2] = useState(false); // State to store API response
+  const [loader3, setLoader3] = useState(false); // State to store API response
 
   function syntaxHighlight(json) {
     return json.replace(/(&|<|>|"|')/g, (match) => {
@@ -93,6 +105,87 @@ function App() {
     }
   };
 
+  const handleProcessFile = async (job_id) => {
+    if (!file) {
+      alert('Please upload a file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('files', file);
+
+    switch (job_id) {
+      case 1:
+        try {
+          setLoader1(true);
+          const response = await axios.post(student_info, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            maxRedirects: 5,
+          });
+          if (response.data.status === 'success') {
+            setResponse1(response.data); // Store the API response
+            toast.success('File processed successfully!');
+          }
+          setLoader1(false);
+        } catch (error) {
+          console.error('Error processing file:', error);
+          setLoader1(false);
+          toast.error('Failed to process the file. Please try again.');
+        }
+        break;
+
+      case 2:
+        try {
+          setLoader2(true);
+          const response = await axios.post(marksheet_table, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          if (response.data.status === 'success') {
+            setResponse2(response.data); // Store the API response
+            toast.success('File processed successfully!');
+          }
+          setLoader2(false);
+        } catch (error) {
+          console.error('Error processing file:', error);
+          setLoader2(false);
+          toast.error('Failed to process the file. Please try again.');
+        }
+        break;
+
+      case 3:
+        try {
+          setLoader3(true);
+          const response = await axios.post(glib_process, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          if (response.data.status === 'success') {
+            setResponse3(response.data); // Store the API response
+            toast.success('File processed successfully!');
+          }
+          setLoader3(false);
+        } catch (error) {
+          console.error('Error processing file:', error);
+          setLoader3(false);
+          toast.error('Failed to process the file. Please try again.');
+        }
+        break;
+
+      default:
+        break;
+    }
+
+
+  };
+
+
+
+
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [])
@@ -100,7 +193,7 @@ function App() {
 
   return (
     <div className="App min-h-screen bg-gray-50 p-8">
-      <h1 className="text-5xl text-center font-bold -m-3 montserrat-underline py-1 px-5 rounded-2xl shadow-lg shadow-gray-400 text-gray-800 bg-red-400 w-fit mx-auto">OCR Comparison Tool</h1>
+      <h1 className="text-5xl text-center  -m-3 montserrat-underline py-1 px-5 rounded-2xl shadow-lg shadow-gray-400 text-white bg-[#658ac0] w-fit mx-auto">OCR Comparison Tool</h1>
 
       {/* Single Drag-and-Drop Area */}
       <div
@@ -165,34 +258,38 @@ function App() {
         </div>
       }
 
-      <div className="flex flex-wrap justify-between mt-8 min-h-[600px]">
+      <div className="flex flex-wrap justify-center gap-x-10 mt-8 min-h-[600px]">
         {/* TIPSTAT */}
         <div className="w-[700px] min-h-[80%] bg-[#e6eeff] justify-center pt-4 px-4 shadow-lg rounded-lg">
           <h2 className="text-2xl underline font-bold text-[#2665eb] text-center">Tipstat's OCR Solution</h2>
 
           <div className='flex justify-center gap-x-4 mt-4'>
             <button
-              // onClick={onClick}
+              onClick={() => handleProcessFile(1)} // Attach handler
               className="px-4 py-2 text-base font-medium text-white bg-[#8898ff] border-2 border-[#596fff] rounded-lg hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
-            > Process Table
+            > Student Info.
             </button>
 
             <button
-              // onClick={onClick}
+              onClick={() => handleProcessFile(2)} // Attach handler
               className="px-4 py-2 text-base font-medium text-white bg-[#8898ff] border-2 border-[#596fff] rounded-lg hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
-            > Process Remaining
+            > Marksheet Paper
             </button>
           </div>
 
-          <h3 className="text-lg underline mt-4 text-red-400 text-center">Subtopic Solution</h3>
+          <h3 className="text-lg underline mt-4 text-gray-500 text-center">Student Info.</h3>
           <pre className="bg-gray-50 border p-4 mt-1 rounded-lg shadow-inner shadow-gray-400 overflow-auto h-[300px]">
-            <code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(result, null, 2)) }} />
+            {response1 && <code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(response1, null, 2)) }} />}
+            {loader1 && <Lottie animationData={ocr_lottie} loop={true} className='w-[350px] mx-auto' />}
           </pre>
 
-          <h3 className="text-lg underline mt-4 text-red-400 text-center">Subtopic Solution</h3>
+          <h3 className="text-lg underline mt-4 text-gray-500 text-center">Marksheet Table</h3>
           <pre className="bg-gray-50 border p-4 mt-1 rounded-lg shadow-inner shadow-gray-400 overflow-auto h-[300px]">
-            <code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(result, null, 2)) }} />
+            {response2 && <code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(response2, null, 2)) }} />}
+            {loader2 && <Lottie animationData={ocr_lottie} loop={true} className='w-[350px] mx-auto' />}
           </pre>
+
+
         </div>
 
         {/* GLIB */}
@@ -200,17 +297,19 @@ function App() {
           <h2 className="text-2xl border underline font-bold text-[#8b5cf6] text-center">GLib's OCR Solution</h2>
           <div className='flex justify-center gap-x-4 mt-4'>
             <button
-              // onClick={onClick}
+              onClick={() => handleProcessFile(3)} // Attach handler
               className="px-4 py-2 text-base font-medium text-white bg-[#ab88ff] border-2 border-[#8b5cf6] rounded-lg hover:bg-[#8b5cf6] active:bg-[#783eff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
             > Process File
             </button>
 
           </div>
           <pre className="bg-gray-50 mt-12 border p-4 mb-4 rounded-lg shadow-inner shadow-gray-400 overflow-auto h-[650px]">
-            <code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(result, null, 2)) }} />
+            {response3 && < code dangerouslySetInnerHTML={{ __html: syntaxHighlight(JSON.stringify(response3, null, 2)) }} />}
+            {loader3 && <Lottie animationData={ocr_lottie} loop={true} className='w-[350px] mx-auto' />}
           </pre>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
