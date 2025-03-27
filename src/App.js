@@ -45,6 +45,12 @@ function App() {
     const uploadedFile = event.target.files[0];
     if (uploadedFile && (uploadedFile.type.includes('image') || uploadedFile.type.includes('pdf'))) {
       setFile(uploadedFile);
+      setResponse1("");
+      setResponse2("");
+      setResponse3("");
+      setLoader1(false);
+      setLoader2(false);
+      setLoader3(false);
       setFileName(uploadedFile.name); // Set the file name
       setTimeout(() => {
         window.scrollTo({ top: 1050, behavior: 'smooth' });
@@ -64,6 +70,12 @@ function App() {
     const uploadedFile = event.dataTransfer.files[0];
     if (uploadedFile && (uploadedFile.type.includes('image') || uploadedFile.type.includes('pdf'))) {
       setFile(uploadedFile);
+      setResponse1("");
+      setResponse2("");
+      setResponse3("");
+      setLoader1(false);
+      setLoader2(false);
+      setLoader3(false);
       setFileName(uploadedFile.name); // Set the file name
       setTimeout(() => {
         window.scrollTo({ top: 1050, behavior: 'smooth' });
