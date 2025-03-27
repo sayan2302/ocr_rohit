@@ -76,7 +76,7 @@ function App() {
 
   const handleProcessFile = async (job_id) => {
     if (!file) {
-      alert('Please upload a file first.');
+      toast.warning('Please upload a file first.');
       return;
     }
 
@@ -242,7 +242,7 @@ function App() {
             <button
               onClick={() => handleProcessFile(2)} // Attach handler
               className="px-4 py-2 text-base font-medium text-white bg-[#8898ff] border-2 border-[#596fff] rounded-lg hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
-            > Marksheet Paper
+            > Marksheet Table
             </button>
           </div>
 
