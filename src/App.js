@@ -14,6 +14,10 @@ function App() {
   const [response2, setResponse2] = useState(""); // State to store API response
   const [response3, setResponse3] = useState(""); // State to store API response
 
+  const [isProcessing, setIsProcessing] = useState(false); // State to store API response
+
+
+
   const [loader1, setLoader1] = useState(false); // State to store API response
   const [loader2, setLoader2] = useState(false); // State to store API response
   const [loader3, setLoader3] = useState(false); // State to store API response
@@ -98,7 +102,9 @@ function App() {
     switch (job_id) {
       case 1:
         try {
+          setResponse1("");
           setLoader1(true);
+          setIsProcessing(true);
           const response = await axios.post(student_info, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -108,18 +114,22 @@ function App() {
           if (response.data.status === 'success') {
             setResponse1(response.data); // Store the API response
             toast.success('File processed successfully!');
+            setIsProcessing(false);
           }
           setLoader1(false);
         } catch (error) {
           console.error('Error processing file:', error);
           setLoader1(false);
+          setIsProcessing(false);
           toast.error('Failed to process the file. Please try again.');
         }
         break;
 
       case 2:
         try {
+          setResponse2("");
           setLoader2(true);
+          setIsProcessing(true);
           const response = await axios.post(marksheet_table, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -127,19 +137,23 @@ function App() {
           });
           if (response.data.status === 'success') {
             setResponse2(response.data); // Store the API response
+            setIsProcessing(false);
             toast.success('File processed successfully!');
           }
           setLoader2(false);
         } catch (error) {
           console.error('Error processing file:', error);
           setLoader2(false);
+          setIsProcessing(false);
           toast.error('Failed to process the file. Please try again.');
         }
         break;
 
       case 3:
         try {
+          setResponse3("");
           setLoader3(true);
+          setIsProcessing(true);
           const response = await axios.post(glib_process, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -147,12 +161,14 @@ function App() {
           });
           if (response.data.status === 'success') {
             setResponse3(response.data); // Store the API response
+            setIsProcessing(false);
             toast.success('File processed successfully!');
           }
           setLoader3(false);
         } catch (error) {
           console.error('Error processing file:', error);
           setLoader3(false);
+          setIsProcessing(false);
           toast.error('Failed to process the file. Please try again.');
         }
         break;
@@ -246,14 +262,16 @@ function App() {
 
           <div className='flex justify-center gap-x-4 mt-4'>
             <button
+              disabled={isProcessing}
               onClick={() => handleProcessFile(1)} // Attach handler
-              className="px-4 py-2 text-base font-medium text-white bg-[#8898ff] border-2 border-[#596fff] rounded-lg hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
+              className={`${isProcessing ? "bg-[#c6c6c6] border-2 border-[#ffffff]" : "bg-[#8898ff] border-2 border-[#596fff] hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"} px-4 py-2 text-base font-medium text-white  rounded-lg `}
             > Student Info.
             </button>
 
             <button
+              disabled={isProcessing}
               onClick={() => handleProcessFile(2)} // Attach handler
-              className="px-4 py-2 text-base font-medium text-white bg-[#8898ff] border-2 border-[#596fff] rounded-lg hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
+              className={`${isProcessing ? "bg-[#c6c6c6] border-2 border-[#ffffff]" : "bg-[#8898ff] border-2 border-[#596fff] hover:bg-[#596fff] active:bg-[#3651ff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"} px-4 py-2 text-base font-medium text-white  rounded-lg `}
             > Marksheet Table
             </button>
           </div>
@@ -278,8 +296,9 @@ function App() {
           <h2 className="text-2xl border underline font-bold text-[#8b5cf6] text-center">GLib's OCR Solution</h2>
           <div className='flex justify-center gap-x-4 mt-4'>
             <button
+              disabled={isProcessing}
               onClick={() => handleProcessFile(3)} // Attach handler
-              className="px-4 py-2 text-base font-medium text-white bg-[#ab88ff] border-2 border-[#8b5cf6] rounded-lg hover:bg-[#8b5cf6] active:bg-[#783eff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"
+              className={`${isProcessing ? "bg-[#c6c6c6] border-2 border-[#ffffff]" : "bg-[#ab88ff] border-2 border-[#8b5cf6] hover:bg-[#8b5cf6] active:bg-[#783eff] transition-transform transform hover:-translate-y-[2px] active:translate-y-0"} px-4 py-2 text-base font-medium text-white  rounded-lg `}
             > Process File
             </button>
 
